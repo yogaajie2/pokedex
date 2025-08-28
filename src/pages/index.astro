@@ -1,7 +1,6 @@
 ---
+import List from "../components/List";
 import "../styles/global.css";
-
-const index = [1, 2, 3, 4];
 ---
 
 <html lang="en">
@@ -17,25 +16,7 @@ const index = [1, 2, 3, 4];
     <main class="min-h-screen p-4 text-neutral-900">
       <div class="md:container">
         <h1 class="text-2xl">Pokedex</h1>
-
-        <section
-          class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
-        >
-          {
-            index.map(() => (
-              <div class="relative min-h-36 rounded-2xl bg-emerald-600 p-4 text-white">
-                <p class="font-bold">Pokemon</p>
-                <p>Type</p>
-
-                <img
-                  alt=""
-                  class="absolute right-4 bottom-4 h-20 w-20"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg"
-                />
-              </div>
-            ))
-          }
-        </section>
+        <List client:load />
       </div>
     </main>
   </body>
