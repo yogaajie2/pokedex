@@ -121,7 +121,7 @@ const List = () => {
             }}
           >
             <p class="text-lg font-bold capitalize lg:text-xl xl:text-2xl">
-              {pokemon.name}
+              {pokemon.name.replace(/-/g, " ")}
             </p>
 
             <div class="mt-3 flex flex-col gap-2 xl:mt-6">
@@ -136,6 +136,10 @@ const List = () => {
               alt=""
               class="absolute right-2 bottom-2 h-20 w-20 lg:h-24 lg:w-24 xl:h-32 xl:w-32"
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
+              onError={(e) =>
+                (e.currentTarget.src =
+                  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48ZyBmaWxsPSJub25lIiBzdHJva2U9IiM2ZjZmNmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIj48cGF0aCBkPSJNMjAuMDQgMTYuMDQ4QTkgOSAwIDAgMCA3Ljk1NyAzLjk1OG0tMi4zMiAxLjY3OGE5IDkgMCAxIDAgMTIuNzM3IDEyLjcxOSIvPjxwYXRoIGQ9Ik05Ljg4NCA5Ljg3NGEzIDMgMCAxIDAgNC4yNCA0LjI0Nm0uNTctMy40NDFhMyAzIDAgMCAwLTEuNDEtMS4zOU0zIDEyaDZtNyAwaDVNMyAzbDE4IDE4Ii8+PC9nPjwvc3ZnPg==")
+              }
             />
           </div>
         ))}

@@ -31,10 +31,14 @@ const Card = ({ close, pokemon }: Props) => {
   const tabs = ["About", "Base Stats", "Evolution", "Moves"];
 
   useEffect(() => {
-    fetchPokemonSpecies(pokemon?.name as string).then((data) => {
-      setSpeciesData(data);
-      setIsSpeciesDataLoading(false);
-    });
+    fetchPokemonSpecies(pokemon?.name as string)
+      .then((data) => {
+        setSpeciesData(data);
+        setIsSpeciesDataLoading(false);
+      })
+      .catch(() => {
+        setIsSpeciesDataLoading(false);
+      });
   }, []);
 
   // Format the gender rate number which shows the number in eights into percentages
@@ -130,7 +134,9 @@ const Card = ({ close, pokemon }: Props) => {
 
         <section class="mt-6 flex items-center justify-between text-white">
           <div>
-            <p class="text-4xl font-bold capitalize">{pokemon?.name}</p>
+            <p class="text-4xl font-bold capitalize">
+              {pokemon?.name.replace(/-/g, " ")}
+            </p>
 
             <div class="mt-3 flex gap-2 xl:mt-6">
               {pokemon?.types.map((type) => (
@@ -151,6 +157,10 @@ const Card = ({ close, pokemon }: Props) => {
             alt=""
             class="absolute -top-40 left-1/2 h-48 w-48 -translate-x-1/2 lg:-top-48 lg:h-56 lg:w-56 xl:-top-48 xl:h-56 xl:w-56"
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon?.id}.png`}
+            onError={(e) =>
+              (e.currentTarget.src =
+                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48ZyBmaWxsPSJub25lIiBzdHJva2U9IiM2ZjZmNmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIj48cGF0aCBkPSJNMjAuMDQgMTYuMDQ4QTkgOSAwIDAgMCA3Ljk1NyAzLjk1OG0tMi4zMiAxLjY3OGE5IDkgMCAxIDAgMTIuNzM3IDEyLjcxOSIvPjxwYXRoIGQ9Ik05Ljg4NCA5Ljg3NGEzIDMgMCAxIDAgNC4yNCA0LjI0Nm0uNTctMy40NDFhMyAzIDAgMCAwLTEuNDEtMS4zOU0zIDEyaDZtNyAwaDVNMyAzbDE4IDE4Ii8+PC9nPjwvc3ZnPg==")
+            }
           />
 
           <nav>
@@ -168,10 +178,14 @@ const Card = ({ close, pokemon }: Props) => {
                             .filter(Boolean) // remove empty strings
                             .pop(),
                         ),
-                      ).then((data) => {
-                        setEvolutionChains(data);
-                        setIsEvolutionChainsLoading(false);
-                      });
+                      )
+                        .then((data) => {
+                          setEvolutionChains(data);
+                          setIsEvolutionChainsLoading(false);
+                        })
+                        .catch(() => {
+                          setIsEvolutionChainsLoading(false);
+                        });
                     }
 
                     setActiveTab(tab);
@@ -241,7 +255,9 @@ const Card = ({ close, pokemon }: Props) => {
                     <p class="w-2/3">
                       {isSpeciesDataLoading
                         ? "Loading..."
-                        : formatGenderRate(speciesData?.gender_rate as number)}
+                        : speciesData
+                          ? formatGenderRate(speciesData?.gender_rate as number)
+                          : "No Data"}
                     </p>
                   </div>
 
@@ -251,13 +267,15 @@ const Card = ({ close, pokemon }: Props) => {
                     <p class="w-2/3">
                       {isSpeciesDataLoading
                         ? "Loading..."
-                        : speciesData?.egg_groups
-                            .map(
-                              (egg_group) =>
-                                egg_group.name.charAt(0).toUpperCase() +
-                                egg_group.name.slice(1),
-                            )
-                            .join(", ")}
+                        : speciesData
+                          ? speciesData?.egg_groups
+                              .map(
+                                (egg_group) =>
+                                  egg_group.name.charAt(0).toUpperCase() +
+                                  egg_group.name.slice(1),
+                              )
+                              .join(", ")
+                          : "No Data"}
                     </p>
                   </div>
                 </div>
@@ -415,9 +433,11 @@ const Card = ({ close, pokemon }: Props) => {
                 </div>
               ) : (
                 <div class="mt-8 flex flex-col items-center gap-2">
-                  {renderEvolutionChain(
-                    evolutionChains?.chain as EvolutionChain,
-                  )}
+                  {evolutionChains
+                    ? renderEvolutionChain(
+                        evolutionChains?.chain as EvolutionChain,
+                      )
+                    : "No Evolution Data Available"}
                 </div>
               ))}
 
