@@ -2,35 +2,13 @@ import { useEffect, useState } from "preact/hooks";
 import Details from "./Details";
 import type { Pokemon } from "../types";
 import { typeColors } from "../type-colors";
+import { fetchPokemonDetails, fetchPokemons } from "../api";
 
 const List = () => {
   const [isDetailsShown, setIsDetailsShown] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [pokemons, setPokemons] = useState([]);
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
-  const API_URL = "https://pokeapi.co/api/v2/";
-  const cache: { [key: string]: any } = {};
-
-  // Get function handler and caching
-  async function get(endpoint: string) {
-    if (!cache[endpoint]) {
-      const data = await fetch(API_URL + endpoint).then((response) =>
-        response.json(),
-      );
-
-      cache[endpoint] = data;
-    }
-
-    return cache[endpoint];
-  }
-
-  function fetchPokemons(limit: number, offset: number) {
-    return get(`pokemon?limit=${limit}&offset=${offset}`);
-  }
-
-  function fetchPokemonDetails(name: string) {
-    return get(`pokemon/${name}`);
-  }
 
   useEffect(() => {
     fetchPokemons(130, 0).then(async ({ results: list }) => {
