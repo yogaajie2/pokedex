@@ -1,42 +1,15 @@
 import { useEffect, useState } from "preact/hooks";
 import Details from "./Details";
-
-interface Pokemon {
-  id: number;
-  name: string;
-  types: { type: { name: string } }[];
-}
+import type { Pokemon } from "../types";
+import { typeColors } from "../type-colors";
 
 const List = () => {
   const [isDetailsShown, setIsDetailsShown] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [pokemons, setPokemons] = useState([]);
+  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
   const API_URL = "https://pokeapi.co/api/v2/";
   const cache: { [key: string]: any } = {};
-
-  const typeColors: Record<string, string> = {
-    normal: "bg-normal",
-    fighting: "bg-fighting",
-    flying: "bg-flying",
-    poison: "bg-poison",
-    ground: "bg-ground",
-    rock: "bg-rock",
-    bug: "bg-bug",
-    ghost: "bg-ghost",
-    steel: "bg-steel",
-    fire: "bg-fire",
-    water: "bg-water",
-    grass: "bg-grass",
-    electric: "bg-electric",
-    psychic: "bg-psychic",
-    ice: "bg-ice",
-    dragon: "bg-dragon",
-    dark: "bg-dark",
-    fairy: "bg-fairy",
-    stellar: "bg-stellar",
-    unknown: "bg-unknown",
-    shadow: "bg-shadow",
-  };
 
   // Get function handler and caching
   async function get(endpoint: string) {
@@ -106,7 +79,10 @@ const List = () => {
             class={`relative min-h-36 cursor-pointer rounded-2xl p-4 text-white transition-transform hover:scale-105 md:py-6 xl:min-h-48 xl:p-6 ${typeColors[pokemon.types[0].type.name as string] || "bg-shadow"}`}
             key={pokemon.id}
             role="button"
-            onClick={() => setIsDetailsShown(true)}
+            onClick={() => {
+              setSelectedPokemon(pokemon);
+              setIsDetailsShown(true);
+            }}
           >
             <p class="text-lg font-bold capitalize lg:text-xl xl:text-2xl">
               {pokemon.name}
@@ -129,7 +105,12 @@ const List = () => {
         ))}
       </section>
 
-      {isDetailsShown && <Details close={() => setIsDetailsShown(false)} />}
+      {isDetailsShown && (
+        <Details
+          close={() => setIsDetailsShown(false)}
+          pokemon={selectedPokemon}
+        />
+      )}
     </>
   );
 };
