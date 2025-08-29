@@ -425,7 +425,7 @@ const Card = ({ close, pokemon }: Props) => {
               <>
                 <p class="text-lg font-bold">Move List</p>
 
-                <div class="mt-4 grid grid-cols-3 gap-2 text-center capitalize">
+                <div class="mt-4 grid grid-cols-3 items-center gap-x-2 gap-y-4 text-center capitalize">
                   {pokemon?.moves.map((move) => (
                     <p>{move.move.name.replace("-", " ")}</p>
                   ))}
