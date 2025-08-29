@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { fetchPokemonSpecies } from "../api";
+import { fetchEvolutionChains, fetchPokemonSpecies } from "../api";
 import type { Pokemon } from "../types";
 import { typeColors } from "../type-colors";
 
@@ -10,11 +10,22 @@ interface Props {
 
 interface Species {
   egg_groups: { name: string }[];
+  evolution_chain: { url: string };
   gender_rate: number;
 }
 
+type EvolutionChain = { species: { name: string }; evolves_to: any[] };
+
 const Card = ({ close, pokemon }: Props) => {
   const [activeTab, setActiveTab] = useState("About");
+
+  const [evolutionChains, setEvolutionChains] = useState<{
+    chain: EvolutionChain;
+  } | null>(null);
+
+  const [isEvolutionChainsLoading, setIsEvolutionChainsLoading] =
+    useState(true);
+
   const [isSpeciesDataLoading, setIsSpeciesDataLoading] = useState(true);
   const [speciesData, setSpeciesData] = useState<Species | null>(null);
   const tabs = ["About", "Base Stats", "Evolution", "Moves"];
@@ -51,6 +62,44 @@ const Card = ({ close, pokemon }: Props) => {
         </div>
       </div>
     );
+  }
+
+  function renderEvolutionChain(chain: EvolutionChain) {
+    let names: string[] = [];
+
+    function traverse(node: EvolutionChain) {
+      names.push(node.species.name);
+
+      if (node.evolves_to.length > 0) {
+        node.evolves_to.forEach((evolution) => traverse(evolution));
+      }
+    }
+
+    traverse(chain);
+
+    return names.map((name, index) => (
+      <>
+        <p
+          class={`capitalize ${name === pokemon?.name ? "text-xl font-bold" : "text-lg"}`}
+        >
+          {name}
+        </p>
+
+        {index < names.length - 1 && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="m12.37 15.835l6.43-6.63C19.201 8.79 18.958 8 18.43 8H5.57c-.528 0-.771.79-.37 1.205l6.43 6.63c.213.22.527.22.74 0"
+            />
+          </svg>
+        )}
+      </>
+    ));
   }
 
   function totalStats() {
@@ -109,7 +158,24 @@ const Card = ({ close, pokemon }: Props) => {
               {tabs.map((tab) => (
                 <li
                   class={`cursor-pointer border-b-3 pb-4 transition-colors hover:text-black ${activeTab === tab ? "border-black text-black" : "text-gray border-transparent"}`}
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => {
+                    if (tab === "Evolution" && !evolutionChains) {
+                      fetchEvolutionChains(
+                        // Extract the ID from the URL
+                        Number(
+                          speciesData?.evolution_chain.url
+                            .split("/")
+                            .filter(Boolean) // remove empty strings
+                            .pop(),
+                        ),
+                      ).then((data) => {
+                        setEvolutionChains(data);
+                        setIsEvolutionChainsLoading(false);
+                      });
+                    }
+
+                    setActiveTab(tab);
+                  }}
                 >
                   {tab}
                 </li>
@@ -323,19 +389,37 @@ const Card = ({ close, pokemon }: Props) => {
               </>
             )}
 
-            {activeTab === "Evolution" && (
-              <>
-                <p class="text-lg font-bold">Evolution Chains</p>
+            {activeTab === "Evolution" &&
+              (isEvolutionChainsLoading ? (
+                <div class="flex h-full w-full flex-col items-center gap-8 pt-12">
+                  <p class="text-lg font-bold">Loading...</p>
 
-                <div class="mt-8 flex flex-col gap-4 text-center">
-                  <p class="font-bold">Bulbasaur</p>
-                  <p>down</p>
-                  <p class="font-bold">Ivysaur</p>
-                  <p>down</p>
-                  <p class="font-bold">Venusaur</p>
+                  <svg
+                    class="animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M12 4c4.08 0 7.45 3.05 7.94 7h-4.06c-.45-1.73-2.02-3-3.88-3s-3.43 1.27-3.87 3H4.06C4.55 7.05 7.92 4 12 4"
+                      opacity="0.3"
+                    />
+
+                    <path
+                      fill="currentColor"
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 2c4.08 0 7.45 3.05 7.94 7h-4.06c-.45-1.73-2.02-3-3.88-3s-3.43 1.27-3.87 3H4.06C4.55 7.05 7.92 4 12 4m2 8c0 1.1-.9 2-2 2s-2-.9-2-2s.9-2 2-2s2 .9 2 2m-2 8c-4.08 0-7.45-3.05-7.94-7h4.06c.44 1.73 2.01 3 3.87 3s3.43-1.27 3.87-3h4.06c-.47 3.95-3.84 7-7.92 7"
+                    />
+                  </svg>
                 </div>
-              </>
-            )}
+              ) : (
+                <div class="mt-8 flex flex-col items-center gap-2">
+                  {renderEvolutionChain(
+                    evolutionChains?.chain as EvolutionChain,
+                  )}
+                </div>
+              ))}
 
             {activeTab === "Moves" && (
               <>

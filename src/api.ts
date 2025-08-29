@@ -25,3 +25,7 @@ export function fetchPokemonDetails(name: string) {
 export function fetchPokemonSpecies(name: string) {
   return get(`pokemon-species/${name}`);
 }
+
+export function fetchEvolutionChains(id: number) {
+  return get(`evolution-chain/${id}`);
+}
