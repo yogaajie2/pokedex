@@ -21,7 +21,6 @@ const Card = ({ close, pokemon }: Props) => {
 
   useEffect(() => {
     fetchPokemonSpecies(pokemon?.name as string).then((data) => {
-      console.log(data);
       setSpeciesData(data);
       setIsSpeciesDataLoading(false);
     });
@@ -209,7 +208,14 @@ const Card = ({ close, pokemon }: Props) => {
                       {pokemon?.stats[0].base_stat}
                     </p>
 
-                    <div class="bg-gray h-1 w-[55%]" />
+                    <div class="bg-gray relative h-1 w-[55%] rounded">
+                      <div
+                        class={`relative h-1 rounded ${(pokemon?.stats[0].base_stat as number) > 66 ? "bg-grass" : (pokemon?.stats[0].base_stat as number) > 33 ? "bg-electric" : "bg-fire"}`}
+                        style={{
+                          width: `${(pokemon?.stats[0].base_stat as number) > 100 ? 100 : pokemon?.stats[0].base_stat}%`,
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div class="flex items-center">
@@ -219,7 +225,14 @@ const Card = ({ close, pokemon }: Props) => {
                       {pokemon?.stats[1].base_stat}
                     </p>
 
-                    <div class="bg-gray h-1 w-[55%]" />
+                    <div class="bg-gray relative h-1 w-[55%] rounded">
+                      <div
+                        class={`relative h-1 rounded ${(pokemon?.stats[1].base_stat as number) > 66 ? "bg-grass" : (pokemon?.stats[1].base_stat as number) > 33 ? "bg-electric" : "bg-fire"}`}
+                        style={{
+                          width: `${(pokemon?.stats[1].base_stat as number) > 100 ? 100 : pokemon?.stats[1].base_stat}%`,
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div class="flex items-center">
@@ -229,7 +242,14 @@ const Card = ({ close, pokemon }: Props) => {
                       {pokemon?.stats[2].base_stat}
                     </p>
 
-                    <div class="bg-gray h-1 w-[55%]" />
+                    <div class="bg-gray relative h-1 w-[55%] rounded">
+                      <div
+                        class={`relative h-1 rounded ${(pokemon?.stats[2].base_stat as number) > 66 ? "bg-grass" : (pokemon?.stats[2].base_stat as number) > 33 ? "bg-electric" : "bg-fire"}`}
+                        style={{
+                          width: `${(pokemon?.stats[2].base_stat as number) > 100 ? 100 : pokemon?.stats[2].base_stat}%`,
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div class="flex items-center">
@@ -239,7 +259,14 @@ const Card = ({ close, pokemon }: Props) => {
                       {pokemon?.stats[3].base_stat}
                     </p>
 
-                    <div class="bg-gray h-1 w-[55%]" />
+                    <div class="bg-gray relative h-1 w-[55%] rounded">
+                      <div
+                        class={`relative h-1 rounded ${(pokemon?.stats[3].base_stat as number) > 66 ? "bg-grass" : (pokemon?.stats[3].base_stat as number) > 33 ? "bg-electric" : "bg-fire"}`}
+                        style={{
+                          width: `${(pokemon?.stats[3].base_stat as number) > 100 ? 100 : pokemon?.stats[3].base_stat}%`,
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div class="flex items-center">
@@ -249,7 +276,14 @@ const Card = ({ close, pokemon }: Props) => {
                       {pokemon?.stats[4].base_stat}
                     </p>
 
-                    <div class="bg-gray h-1 w-[55%]" />
+                    <div class="bg-gray relative h-1 w-[55%] rounded">
+                      <div
+                        class={`relative h-1 rounded ${(pokemon?.stats[4].base_stat as number) > 66 ? "bg-grass" : (pokemon?.stats[4].base_stat as number) > 33 ? "bg-electric" : "bg-fire"}`}
+                        style={{
+                          width: `${(pokemon?.stats[4].base_stat as number) > 100 ? 100 : pokemon?.stats[4].base_stat}%`,
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div class="flex items-center">
@@ -259,13 +293,31 @@ const Card = ({ close, pokemon }: Props) => {
                       {pokemon?.stats[5].base_stat}
                     </p>
 
-                    <div class="bg-gray h-1 w-[55%]" />
+                    <div class="bg-gray relative h-1 w-[55%] rounded">
+                      <div
+                        class={`relative h-1 rounded ${(pokemon?.stats[5].base_stat as number) > 66 ? "bg-grass" : (pokemon?.stats[5].base_stat as number) > 33 ? "bg-electric" : "bg-fire"}`}
+                        style={{
+                          width: `${(pokemon?.stats[5].base_stat as number) > 100 ? 100 : pokemon?.stats[5].base_stat}%`,
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div class="flex items-center">
                     <p class="text-gray w-[25%]">Total</p>
                     <p class="w-[20%] text-center">{totalStats()}</p>
-                    <div class="bg-gray h-1 w-[55%]" />
+
+                    <div class="bg-gray relative h-1 w-[55%] rounded">
+                      <div
+                        class={`relative h-1 rounded ${(totalStats() as number) > 400 ? "bg-grass" : (totalStats() as number) > 200 ? "bg-electric" : "bg-fire"}`}
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            ((totalStats() ?? 0) / 600) * 100,
+                          )}%`,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </>
