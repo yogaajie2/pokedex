@@ -1,4 +1,5 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import { fetchPokemonSpecies } from "../api";
 import type { Pokemon } from "../types";
 import { typeColors } from "../type-colors";
 
@@ -7,9 +8,51 @@ interface Props {
   pokemon: Pokemon | null;
 }
 
+interface Species {
+  egg_groups: { name: string }[];
+  gender_rate: number;
+}
+
 const Card = ({ close, pokemon }: Props) => {
   const [activeTab, setActiveTab] = useState("About");
+  const [isSpeciesDataLoading, setIsSpeciesDataLoading] = useState(true);
+  const [speciesData, setSpeciesData] = useState<Species | null>(null);
   const tabs = ["About", "Base Stats", "Evolution", "Moves"];
+
+  useEffect(() => {
+    fetchPokemonSpecies(pokemon?.name as string).then((data) => {
+      console.log(data);
+      setSpeciesData(data);
+      setIsSpeciesDataLoading(false);
+    });
+  }, []);
+
+  // Format the gender rate number which shows the number in eights into percentages
+  function formatGenderRate(gender_rate: number) {
+    if (gender_rate === -1) {
+      return "Genderless";
+    }
+
+    const female = (gender_rate / 8) * 100;
+    const male = 100 - female;
+
+    // Round to 1 decimal
+    const format = (n: number) => (n % 1 === 0 ? n : n.toFixed(1));
+
+    return (
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="text-[#00e1ff]">♂</span>
+          <p>{format(male)}%</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="text-[#ff0080]">♀</span>
+          <p>{format(female)}%</p>
+        </div>
+      </div>
+    );
+  }
 
   function totalStats() {
     return pokemon?.stats.reduce((total, stat) => total + stat.base_stat, 0);
@@ -129,12 +172,28 @@ const Card = ({ close, pokemon }: Props) => {
                 <div class="mt-4 flex flex-col gap-2">
                   <div class="flex items-center">
                     <p class="text-gray w-1/3">Gender</p>
-                    <p class="w-2/3">deez/nuts</p>
+
+                    <p class="w-2/3">
+                      {isSpeciesDataLoading
+                        ? "Loading..."
+                        : formatGenderRate(speciesData?.gender_rate as number)}
+                    </p>
                   </div>
 
                   <div class="flex items-center">
                     <p class="text-gray w-1/3">Egg Groups</p>
-                    <p class="w-2/3">Monster</p>
+
+                    <p class="w-2/3">
+                      {isSpeciesDataLoading
+                        ? "Loading..."
+                        : speciesData?.egg_groups
+                            .map(
+                              (egg_group) =>
+                                egg_group.name.charAt(0).toUpperCase() +
+                                egg_group.name.slice(1),
+                            )
+                            .join(", ")}
+                    </p>
                   </div>
                 </div>
               </>
