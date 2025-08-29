@@ -5,13 +5,26 @@ import { typeColors } from "../type-colors";
 import { fetchPokemonDetails, fetchPokemons } from "../api";
 
 const List = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsShown, setIsDetailsShown] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [pokemons, setPokemons] = useState([]);
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+  const [totalPokemon, setTotalPokemon] = useState(0);
+
+  // temp hardcoded value
+  const perPage = 131;
+
+  const totalPages = Math.ceil(totalPokemon / perPage);
 
   useEffect(() => {
-    fetchPokemons(130, 0).then(async ({ results: list }) => {
+    // Get total pokemon count
+    fetchPokemons(100000, 0).then((data) => {
+      setTotalPokemon(data.count);
+    });
+
+    // Initial fetch
+    fetchPokemons(perPage, 0).then(async ({ results: list }) => {
       const data: any = [];
 
       await Promise.all(
@@ -25,6 +38,25 @@ const List = () => {
       setIsLoading(false);
     });
   }, []);
+
+  // Show pagination buttons based on total data and per page
+  function renderPagination({
+    onPageChange,
+  }: {
+    onPageChange: (page: number) => void;
+  }) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+      <button
+        key={page}
+        onClick={() => onPageChange(page)}
+        className={`hover:bg-gray cursor-pointer rounded-lg px-2 py-1 transition-colors hover:text-white md:px-3 md:text-lg ${
+          currentPage === page ? "bg-gray text-white" : "text-black"
+        }`}
+      >
+        {page}
+      </button>
+    ));
+  }
 
   return isLoading ? (
     <div class="fixed top-0 left-0 flex h-screen w-screen flex-col items-center justify-center gap-8">
@@ -51,6 +83,32 @@ const List = () => {
     </div>
   ) : (
     <>
+      <nav class="mt-6 flex items-center justify-center gap-2 md:gap-4">
+        {renderPagination({
+          onPageChange: (page: number) => {
+            setIsLoading(true);
+
+            fetchPokemons(perPage, (page - 1) * perPage).then(
+              async ({ results: list }) => {
+                const data: any = [];
+
+                await Promise.all(
+                  list.map(async (pokemon: { name: string }) => {
+                    const details = await fetchPokemonDetails(pokemon.name);
+                    data[details.id] = details;
+                  }),
+                );
+
+                setPokemons(data);
+                setIsLoading(false);
+              },
+            );
+
+            setCurrentPage(page);
+          },
+        })}
+      </nav>
+
       <section class="mt-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4 xl:grid-cols-4">
         {pokemons.map((pokemon: Pokemon) => (
           <div
