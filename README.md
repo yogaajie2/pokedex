@@ -1,43 +1,46 @@
-# Astro Starter Kit: Minimal
+# Pokedex App (Built Using TypeScript, Astro, Preact, and Tailwind CSS)
 
-```sh
-yarn create astro@latest -- --template minimal
-```
+A responsive web application that lets users browse and view details about Pokémon. Built using TypeScript, Astro, Preact, and styled using Tailwind CSS. Deployed using Cloudflare Pages. Data is provided from the PokeAPI.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+You can visit the deployed app at [https://pokedex-50t.pages.dev/](https://pokedex-50t.pages.dev/)
 
-## 🚀 Project Structure
+---
 
-Inside of your Astro project, you'll see the following folders and files:
+## How to Run
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+1. Install Node.js
+   - Download and install Node.js: [https://nodejs.org/en/download](https://nodejs.org/en/download)
+   - Verify installation by running:
+     ```bash
+     node -v
+     npm -v
+     ```
+2. Clone or download this repository.
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start development:
+   ```bash
+   npm run dev
+   ```
+5. Building and previewing:
+   ```bash
+   npm run build
+   npm run preview
+   ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Tools & Languages Used
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- TypeScript [(https://www.typescriptlang.org/)](https://www.typescriptlang.org/)
+- Astro [(https://astro.build/)](https://astro.build/)
+- Preact [(https://preactjs.com/)](https://preactjs.com/)
+- Tailwind CSS [(https://tailwindcss.com/)](https://tailwindcss.com/)
+- Cloudflare Pages (for deployment) [(https://pages.cloudflare.com/)](https://pages.cloudflare.com/)
+- PokeAPI (pokemon data provider API) [(https://pokeapi.co/)](https://pokeapi.co/)
 
-Any static assets, like images, can be placed in the `public/` directory.
+---
 
-## 🧞 Commands
+If you have any questions, feel free to contact me anytime.
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `yarn install`             | Installs dependencies                            |
-| `yarn dev`             | Starts local dev server at `localhost:4321`      |
-| `yarn build`           | Build your production site to `./dist/`          |
-| `yarn preview`         | Preview your build locally, before deploying     |
-| `yarn astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `yarn astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Thank you for giving me this opportunity.
